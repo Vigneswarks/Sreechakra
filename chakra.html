@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sree Chakra Developers </title>
+      <link rel="icon" type="image/x-icon" href="Logowhite.jpeg">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-light: #f8f9fa;
+            --bg-white: #ffffff;
+            --text-dark: #212529;
+            --text-muted: #6c757d;
+            --primary: #005A9C;
+            --accent: #FFA500;
+            --border-color: #dee2e6;
+        }
+
+        html.dark {
+            --bg-light: #0a192f;
+            --bg-white: #1d2d44;
+            --text-dark: #e6f1ff;
+            --text-muted: #8892b0;
+            --primary: #64ffda; /* Mint Green for accent in dark mode */
+            --accent: #FFA500;
+            --border-color: #3e5a81;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* --- Theme-aware component styles --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        html.dark header {
+             background-color: rgba(10, 25, 47, 0.8);
+        }
+        
+        .card {
+            background-color: var(--bg-white);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+             transform: translateY(-5px);
+        }
+
+        /* --- Intro Animation --- */
+        #intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-light);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
+        }
+
+        .intro-logo { width: 150px; height: 150px; position: relative; }
+        .intro-logo svg { width: 100%; height: 100%; position: absolute; top: 0; left: 0; }
+        .circuit-path { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: draw 3s ease-in-out forwards; }
+        .spark { fill: var(--accent); opacity: 0; animation: spark-pulse 1.5s ease-in-out 1s infinite; }
+        @keyframes draw { to { stroke-dashoffset: 0; } }
+        @keyframes spark-pulse { 0%, 100% { opacity: 0; transform: scale(0.5); } 50% { opacity: 1; transform: scale(1.2); } }
+        
+        /* --- General Styles --- */
+        .nav-link { position: relative; transition: color 0.3s ease; color: var(--text-dark); }
+        .nav-link::after { content: ''; position: absolute; width: 0; height: 2px; bottom: -4px; left: 50%; transform: translateX(-50%); background-color: var(--accent); transition: width 0.3s ease; }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+        .nav-link:hover { color: var(--primary); }
+
+        .section { display: none; animation: fadeIn 0.8s ease-in-out; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .gallery-item { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .gallery-item:hover { transform: translateY(-10px); }
+        .gallery-item .overlay { opacity: 0; transition: opacity 0.3s ease; }
+        .gallery-item:hover .overlay { opacity: 1; }
+
+        .btn-primary { background-color: var(--accent); color: #ffffff; transition: all 0.3s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); }
+        .btn-primary:hover { background-color: #ffb733; transform: translateY(-2px); box-shadow: 0 7px 14px rgba(255, 165, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.1); }
+        
+        .form-input { background-color: var(--bg-white); border-color: var(--border-color); transition: border-color 0.3s ease, box-shadow 0.3s ease; }
+        .form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.25); }
+
+    </style>
+</head>
+<body class="overflow-x-hidden">
+
+    <!-- Intro Animation Overlay -->
+    <div id="intro-overlay">
+        <div class="intro-logo">
+            <svg viewBox="0 0 100 100">
+                <path class="circuit-path" d="M50 2 A 48 48 0 0 1 98 50" stroke="var(--border-color)" stroke-width="2" fill="none" />
+                <path class="circuit-path" d="M98 50 A 48 48 0 0 1 50 98" stroke="var(--border-color)" stroke-width="2" fill="none" style="animation-delay: 0.2s;"/>
+                <path class="circuit-path" d="M50 98 A 48 48 0 0 1 2 50" stroke="var(--border-color)" stroke-width="2" fill="none" style="animation-delay: 0.4s;"/>
+                <path class="circuit-path" d="M2 50 A 48 48 0 0 1 50 2" stroke="var(--border-color)" stroke-width="2" fill="none" style="animation-delay: 0.6s;"/>
+                <path class="circuit-path" d="M40 30 L60 30 L50 50 L65 50 L35 80 L45 60 L30 60 L40 30 Z" stroke="var(--primary)" stroke-width="3" fill="var(--primary)" style="animation-delay: 1s;"/>
+                <circle class="spark" cx="50" cy="2" r="3" />
+                <circle class="spark" cx="98" cy="50" r="3" style="animation-delay: 1.2s;" />
+                <circle class="spark" cx="50" cy="98" r="3" style="animation-delay: 1.4s;" />
+                <circle class="spark" cx="2" cy="50" r="3" style="animation-delay: 1.6s;" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header id="header" class="backdrop-blur-sm sticky top-0 z-50 transition-all duration-300 shadow-md">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-xl md:text-2xl font-bold text-[var(--primary)] flex items-center gap-3">
+                <img src="Logowhite.jpeg" alt="Sree Chakra Developers Logo" class="h-20 w-30 rounded-full">
+                Sree Chakra Developers
+            </a>
+            <nav class="hidden md:flex items-center space-x-8 text-lg">
+                <a href="#home" class="nav-link active" onclick="showSection('home', this)">Home</a>
+                <a href="#gallery" class="nav-link" onclick="showSection('gallery', this)">Gallery</a>
+                <a href="#about" class="nav-link" onclick="showSection('about', this)">About Us</a>
+                <a href="#contact" class="nav-link" onclick="showSection('contact', this)">Contact</a>
+                <button id="theme-toggle" class="p-2 rounded-full text-[var(--text-dark)] hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <i data-lucide="moon" id="theme-toggle-dark-icon"></i>
+                    <i data-lucide="sun" id="theme-toggle-light-icon" class="hidden"></i>
+                </button>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden text-[var(--primary)]">
+                <i data-lucide="menu"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[var(--bg-white)] p-4 border-t border-[var(--border-color)]">
+            <a href="#home" class="block py-2 text-[var(--text-dark)]" onclick="showSection('home', this); closeMobileMenu();">Home</a>
+            <a href="#gallery" class="block py-2 text-[var(--text-dark)]" onclick="showSection('gallery', this); closeMobileMenu();">Gallery</a>
+            <a href="#about" class="block py-2 text-[var(--text-dark)]" onclick="showSection('about', this); closeMobileMenu();">About Us</a>
+            <a href="#contact" class="block py-2 text-[var(--text-dark)]" onclick="showSection('contact', this); closeMobileMenu();">Contact</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-8 md:py-16">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+             <div class="flex flex-col md:flex-row items-center gap-12">
+                 <div class="md:w-1/2 text-center md:text-left">
+                     <h1 class="text-4xl md:text-6xl font-bold text-[var(--text-dark)] leading-tight mb-4">
+                         Powering Kerala's Progress
+                     </h1>
+                     <p class="text-lg md:text-xl text-[var(--text-muted)] mb-8">
+                         Electrical Contractors based on Thrissur specialized in Carrying out KSEB Electrical distribution system  maintenance,installation and specialized turnkey projects.
+                     </p>
+                     <a href="#contact" onclick="showSection('contact', document.querySelector('a[href=\'#contact\']'))" class="btn-primary font-bold py-3 px-8 rounded-lg inline-flex items-center gap-2">
+                         Get a Quote
+                         <i data-lucide="arrow-right"></i>
+                     </a>
+                 </div>
+                 <div class="md:w-1/2 mt-8 md:mt-0">
+                     <img src="home.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Electrical Engineers at Work" class="rounded-lg shadow-xl w-full h-auto">
+                 </div>
+             </div>
+             <div class="mt-24">
+                 <h2 class="text-3xl font-bold text-center text-[var(--text-dark)] mb-12">Our Core Specializations</h2>
+                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                     <div class="card p-8 rounded-lg text-center">
+                         <i data-lucide="arrow-down-to-line" class="w-16 h-16 mx-auto mb-6 text-[var(--primary)]"></i>
+                         <h3 class="text-xl font-bold text-[var(--text-dark)] mb-2">Underground (UG) Cabling</h3>
+                         <p class="text-[var(--text-muted)]">Expert laying of UG cables for urban modernization, enhancing public safety and grid reliability under KSEB projects.</p>
+                     </div>
+                     <div class="card p-8 rounded-lg text-center">
+                         <i data-lucide="cable" class="w-16 h-16 mx-auto mb-6 text-[var(--primary)]"></i>
+                         <h3 class="text-xl font-bold text-[var(--text-dark)] mb-2">Covered Conductor Stringing</h3>
+                         <p class="text-[var(--text-muted)]">Installation of insulated conductors to prevent outages from natural causes and improve grid performance.</p>
+                     </div>
+                     <div class="card p-8 rounded-lg text-center">
+                         <i data-lucide="network" class="w-16 h-16 mx-auto mb-6 text-[var(--primary)]"></i>
+                         <h3 class="text-xl font-bold text-[var(--text-dark)] mb-2">Aerial Bunched Cables (ABC)</h3>
+                         <p class="text-[var(--text-muted)]">Deploying ABC systems for KSEB to reduce power theft, minimize faults, and ensure safer overhead distribution networks.</p>
+                     </div>
+                      <div class="card p-8 rounded-lg text-center">
+                         <i data-lucide="pole" class="w-16 h-16 mx-auto mb-6 text-[var(--primary)]"></i>
+                         <h3 class="text-xl font-bold text-[var(--text-dark)] mb-2">Pole Installation</h3>
+                         <p class="text-[var(--text-muted)]">Precision erection of electrical posts and poles, forming the backbone of the distribution network across Kerala.</p>
+                     </div>
+                      <div class="card p-8 rounded-lg text-center">
+                         <i data-lucide="transformer" class="w-16 h-16 mx-auto mb-6 text-[var(--primary)]"></i>
+                         <h3 class="text-xl font-bold text-[var(--text-dark)] mb-2">Transformer Installation</h3>
+                         <p class="text-[var(--text-muted)]">Building robust structures and installing transformers, crucial for voltage regulation and power delivery.</p>
+                     </div>
+                 </div>
+             </div>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section id="gallery" class="section">
+            <h2 class="text-4xl font-bold text-center text-[var(--text-dark)] mb-12">Our Executed Projects</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="UGC.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="UG Cable Laying Trench" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">UG Cabling Laying</h3><p class="mt-2">Overhead to underground conversion.</p></div>
+                    </div>
+                </div>
+                <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="ug.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="ABC Installation on pole" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">ABC Installation</h3><p class="mt-2">Upgrading LT lines for loss reduction.</p></div>
+                    </div>
+                </div>
+                <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="cable.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Electrical lines through trees" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">Covered Conductor Installation</h3><p class="mt-2">Stringing in forest areas to prevent faults.</p></div>
+                    </div>
+                </div>
+                 <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="Post.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Pole Installation with a crane" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">Pole Erection, Kodakara</h3><p class="mt-2">New 11kV line installation project.</p></div>
+                    </div>
+                </div>
+                <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="trfr.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Transformer being installed" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">Transformer Installation, Irinjalakuda</h3><p class="mt-2">Capacity upgrade for a distribution transformer.</p></div>
+                    </div>
+                </div>
+                <div class="gallery-item card rounded-lg overflow-hidden relative group">
+                    <img src="abc.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Transformer being installed" class="w-full h-64 object-cover">
+                    <div class="overlay absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4">
+                        <div class="text-center text-white"><h3 class="text-xl font-bold">Maintenance<p class="mt-2">Distribution Utilites Maintenance.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="section">
+             <div class="flex flex-col md:flex-row items-center gap-12">
+                 <div class="md:w-1/2">
+                     <img src="work.jpg" onerror="this.onerror=null;this.src='https://placehold.co/600x400?text=Image+Not+Found';" alt="Professional Team Meeting" class="rounded-lg shadow-xl w-full h-auto">
+                 </div>
+                 <div class="md:w-1/2">
+                     <h2 class="text-4xl font-bold text-[var(--text-dark)] mb-6">About Sree Chakra Developers</h2>
+                     <p class="text-[var(--text-muted)] mb-4 text-lg">
+                         Since 2019, Sree Chakra Developers has been a cornerstone of electrical infrastructure in Kerala. As a Class-A KSEB contractor in Thrissur, we deliver excellence, safety, and innovation in every government project.
+                     </p>
+                     <p class="text-[var(--text-muted)] mb-6 text-lg">
+                         Our certified team specializes in modern grid solutions like UG cabling and ABC installation, combining local knowledge with advanced technology to execute high-quality turnkey projects.
+                     </p>
+                 </div>
+             </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="text-4xl font-bold text-center text-[var(--text-dark)] mb-12">Get In Touch</h2>
+            <div class="max-w-6xl mx-auto flex flex-col md:flex-row gap-12 card p-8 sm:p-12 rounded-lg">
+                <div class="md:w-1/2">
+                    <h3 class="text-2xl font-bold text-[var(--text-dark)] mb-6">Send a Direct Message</h3>
+                    <form id="contact-form">
+                        <div class="mb-4">
+                            <label for="name" class="block text-[var(--text-muted)] mb-2">Full Name</label>
+                            <input type="text" id="name" name="name" class="w-full p-3 rounded-md form-input border" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="email" class="block text-[var(--text-muted)] mb-2">Email Address</label>
+                            <input type="email" id="email" name="email" class="w-full p-3 rounded-md form-input border" required>
+                        </div>
+                        <div class="mb-4">
+                            <label for="message" class="block text-[var(--text-muted)] mb-2">Message</label>
+                            <textarea id="message" name="message" rows="5" class="w-full p-3 rounded-md form-input border" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary font-bold py-3 px-8 rounded-lg w-full">Submit Message</button>
+                        <p id="form-status" class="text-center mt-4"></p>
+                    </form>
+                </div>
+                <div class="md:w-1/2">
+                     <h3 class="text-2xl font-bold text-[var(--text-dark)] mb-6">Our Location</h3>
+                     <div class="space-y-6 text-lg">
+                         <div class="flex items-start gap-4">
+                             <i data-lucide="map-pin" class="w-6 h-6 text-[var(--primary)] mt-1 flex-shrink-0"></i>
+                             <div>
+                                 <h4 class="font-semibold text-[var(--text-dark)]">Office Address</h4>
+                                 <p class="text-[var(--text-muted)]">Sree Chakra Developers, East Kodaly, Thrissur, Kerala, 680699, India</p>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="mt-8 h-64 rounded-lg overflow-hidden shadow-md">
+                         <iframe src="https://maps.google.com/maps?q=10.375068708227348,76.38355883716218&hl=es&z=14&amp;output=embed" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                     </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-[var(--bg-white)] border-t border-[var(--border-color)] mt-16">
+        <div class="container mx-auto px-6 py-6 text-center text-[var(--text-muted)]">
+            <p>&copy; 2025 Sree Chakra Developers. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Lucide Icons Activation ---
+        lucide.createIcons();
+
+        // --- Theme Toggle Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Apply theme on initial load
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDarkMode = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+            lightIcon.classList.toggle('hidden', !isDarkMode);
+            darkIcon.classList.toggle('hidden', isDarkMode);
+        });
+
+
+        // --- Intro Animation Logic ---
+        window.addEventListener('load', () => {
+            const introOverlay = document.getElementById('intro-overlay');
+            setTimeout(() => {
+                introOverlay.style.opacity = '0';
+                introOverlay.style.visibility = 'hidden';
+            }, 3500);
+        });
+
+        // --- Tabbed Navigation Logic ---
+        function showSection(sectionId, element) {
+            document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+            document.getElementById(sectionId)?.classList.add('active');
+            
+            // For desktop nav
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            if(element && element.classList.contains('nav-link')) {
+                element.classList.add('active');
+            } else {
+                // Fallback for buttons that are not nav-links
+                const correspondingNavLink = document.querySelector(`.nav-link[href="#${sectionId}"]`);
+                if(correspondingNavLink) correspondingNavLink.classList.add('active');
+            }
+        }
+        
+        // --- Mobile Menu Toggle ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        function closeMobileMenu() { mobileMenu.classList.add('hidden'); }
+
+        // --- Contact Form Submission ---
+        const contactForm = document.getElementById('contact-form');
+        const formStatus = document.getElementById('form-status');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            formStatus.textContent = 'Sending...';
+            formStatus.style.color = 'var(--primary)';
+            setTimeout(() => {
+                formStatus.textContent = 'Thank you! Your message has been sent.';
+                formStatus.style.color = '#28a745';
+                contactForm.reset();
+            }, 1500);
+        });
+
+        // --- Initial setup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('home', document.querySelector('a[href="#home"]'));
+        });
+    </script>
+</body>
+</html>
